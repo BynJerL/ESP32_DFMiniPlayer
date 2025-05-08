@@ -23,9 +23,19 @@ void setup() {
     // Start communication with DFPlayer Mini
     if (player.begin(softwareSerial)) {
         Serial.println("OK");
+        
 
         // Set volume to maximum (0 to 30).
         player.volume(20);
+
+        //----Set different EQ----
+        // player.EQ(DFPLAYER_EQ_NORMAL);
+        player.EQ(DFPLAYER_EQ_POP);
+        //  player.EQ(DFPLAYER_EQ_ROCK);
+        //  player.EQ(DFPLAYER_EQ_JAZZ);
+        //  player.EQ(DFPLAYER_EQ_CLASSIC);
+        //  player.EQ(DFPLAYER_EQ_BASS);
+
         // Play the first MP3 file on the SD card
         // player.play(1);
         player.playMp3Folder(1); // playing music at mp3 folder
