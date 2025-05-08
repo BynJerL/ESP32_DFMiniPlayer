@@ -27,7 +27,8 @@ void setup() {
         // Set volume to maximum (0 to 30).
         player.volume(20);
         // Play the first MP3 file on the SD card
-        player.play(2);
+        // player.play(1);
+        player.playMp3Folder(1); // playing music at mp3 folder
     } else {
         Serial.println("Connecting to DFPlayer Mini failed!");
     }
