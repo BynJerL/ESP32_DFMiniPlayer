@@ -12,42 +12,51 @@ SoftwareSerial softwareSerial(PIN_MP3_RX, PIN_MP3_TX);
 // Create the Player object
 DFRobotDFPlayerMini player;
 
+void menu_opcoes() {
+  Serial.println();
+  Serial.println("=======================================");
+  Serial.println("Commands:");
+  Serial.println("[1-3]    -> select the MP3 file");
+  Serial.println("[s]      -> stop the music");
+  Serial.println("[p]      -> pause/continue music");
+  Serial.println("[+ or -] -> increase or decrease audio volume");
+  Serial.println();
+  Serial.println("=======================================");
+}
+
 void setup() {
-    pinMode(Player_state, INPUT_PULLUP);
+  pinMode(Player_state, INPUT_PULLUP);
 
-    // Init USB serial port for debugging
-    Serial.begin(9600);
-    // Init serial port for DFPlayer Mini
-    softwareSerial.begin(9600);
+  // Init USB serial port for debugging
+  Serial.begin(9600);
+  // Init serial port for DFPlayer Mini
+  softwareSerial.begin(9600);
 
-    // Start communication with DFPlayer Mini
-    if (player.begin(softwareSerial)) {
-        Serial.println("OK");
-        
+  Serial.println("Initializing DFPlayer Mini...");
 
-        // Set volume to maximum (0 to 30).
-        player.volume(20);
+  if (!player.begin(softwareSerial)) {
+    Serial.println("Failed to initialize DFPlayer Mini!");
+    Serial.println("Try this:");
+    Serial.println("1. Check the DFPlayer Mini connections");
+    Serial.println("2. Insert an SD card");
+    return;
+  }
 
-        //----Set different EQ----
-        // player.EQ(DFPLAYER_EQ_NORMAL);
-        player.EQ(DFPLAYER_EQ_POP);
-        //  player.EQ(DFPLAYER_EQ_ROCK);
-        //  player.EQ(DFPLAYER_EQ_JAZZ);
-        //  player.EQ(DFPLAYER_EQ_CLASSIC);
-        //  player.EQ(DFPLAYER_EQ_BASS);
+  Serial.println("Initialization success!");
 
-        // Play the first MP3 file on the SD card
-        // player.play(1);
-        player.playMp3Folder(1); // playing music at mp3 folder
-    } else {
-        Serial.println("Connecting to DFPlayer Mini failed!");
-    }
+  // Setups
+  player.setTimeOut(500);
+  player.volume(15);
+  player.EQ(DFPLAYER_EQ_NORMAL);
+  player.playMp3Folder(1);
+
+  menu_opcoes();
 }
 
 void loop() {
-    if (digitalRead(Player_state) == LOW) {
-        Serial.println("audio is playing");
-    } else {
-        Serial.println("audio is not playing");
-    }
+    // if (digitalRead(Player_state) == LOW) {
+    //     Serial.println("audio is playing");
+    // } else {
+    //     Serial.println("audio is not playing");
+    // }
 }
