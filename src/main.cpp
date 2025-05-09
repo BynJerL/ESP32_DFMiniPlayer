@@ -15,11 +15,12 @@ SoftwareSerial softwareSerial(PIN_MP3_RX, PIN_MP3_TX);
 // Create the Player object
 DFRobotDFPlayerMini player;
 
+// Interfacing using Serial
 void menu_opcoes() {
   Serial.println();
   Serial.println(F("======================================="));
   Serial.println(F("Commands:"));
-  Serial.println(F("[1-3]    -> select the MP3 file"));
+  Serial.println(F("[1-5]    -> select the MP3 file"));
   Serial.println(F("[s]      -> stop the music"));
   Serial.println(F("[p]      -> pause/continue music"));
   Serial.println(F("[+ or -] -> increase or decrease audio volume"));
@@ -37,15 +38,15 @@ void setup() {
   // Init serial port for DFPlayer Mini
   softwareSerial.begin(9600);
 
-  Serial.println("Initializing DFPlayer Mini...");
+  Serial.println(F("Initializing DFPlayer Mini..."));
 
   if (player.begin(softwareSerial)) {
-    Serial.println("Initialization success!");
+    Serial.println(F("Initialization success!"));
   } else {
-    Serial.println("Failed to initialize DFPlayer Mini!");
-    Serial.println("Try this:");
-    Serial.println("1. Check the DFPlayer Mini connections");
-    Serial.println("2. Insert an SD card");
+    Serial.println(F("Failed to initialize DFPlayer Mini!"));
+    Serial.println(F("Try this:"));
+    Serial.println(F("1. Check the DFPlayer Mini connections"));
+    Serial.println(F("2. Insert an SD card"));
     return;
   }
 
@@ -81,7 +82,7 @@ void loop() {
       // Stop the music
       case 's':
         player.stop();
-        Serial.println("Music has stopped.");
+        Serial.println(F("Music has stopped."));
         break;
       
       // Pause or continue the music
@@ -90,23 +91,23 @@ void loop() {
 
         if (!isPaused) {
           player.start();
-          Serial.println("Music continue...");
+          Serial.println(F("Music continue..."));
         } else {
           player.pause();
-          Serial.println("Music paused!");
+          Serial.println(F("Music paused!"));
         }
         break;
       
       // Increase the volume
       case '+':
         player.volumeUp();
-        Serial.printf("Current volume: %d", player.readVolume());
+        Serial.printf("Current volume: %d\n", player.readVolume());
         break;
       
       // Decrease the volume
       case '-':
         player.volumeDown();
-        Serial.printf("Current volume: %d", player.readVolume());
+        Serial.printf("Current volume: %d\n", player.readVolume());
         break;
       
       case '<':
@@ -121,20 +122,20 @@ void loop() {
       
       case 'l':
         isLoopEnabled = !isLoopEnabled;
-
-        if (isLoopEnabled) {
-          player.enableLoop();
-          Serial.println("Track loop has been enabled");
-        } else {
-          player.disableLoop();
-          Serial.println("Track loop has been disabled");
-        }
-        
+        Serial.printf("Changing loop status to %s\n", isLoopEnabled? "true" : "false");
         break;
       
       default:
-        Serial.println("Invalid command.");
+        Serial.println(F("Invalid command."));
         break;
+    }
+
+    if (isLoopEnabled) {
+      player.enableLoop();
+      Serial.println(F("Loop status: true"));
+    } else {
+      player.disableLoop();
+      Serial.println(F("Loop status: false"));
     }
 
     menu_opcoes();
