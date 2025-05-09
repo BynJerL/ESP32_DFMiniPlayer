@@ -4,6 +4,8 @@
 
 int Player_state = 13;
 
+bool isPaused = false;
+
 // Use pins 2 and 3 to communicate with DFPlayer Mini
 static const uint8_t PIN_MP3_TX = 27; // Connects to module's RX 
 static const uint8_t PIN_MP3_RX = 26; // Connects to module's TX 
@@ -59,4 +61,45 @@ void loop() {
     // } else {
     //     Serial.println("audio is not playing");
     // }
+  if (Serial.available() > 0) {
+    uint8_t command = Serial.read();
+
+    // Play music
+    if ((command >= '1') &&
+        (command <= '3')) {
+      Serial.printf("Music %c played.\n", command);
+      player.playMp3Folder(command - 48);
+    }
+
+    // Stop music
+    if (command == 's') {
+      player.stop();
+      Serial.println("Music has stopped.");
+    }
+
+    // Pause/Continue music
+    if (command == 'p') {
+      isPaused = !isPaused;
+
+      if (!isPaused) {
+        player.start();
+        Serial.println("Music continue...");
+      } else {
+        player.pause();
+        Serial.println("Music paused!");
+      }
+    }
+
+    if (command == '+') {
+      player.volumeUp();
+      Serial.printf("Current volume: %d", player.readVolume());
+    }
+
+    if (command == '-') {
+      player.volumeDown();
+      Serial.printf("Current volume: %d", player.readVolume());
+    }
+
+    menu_opcoes();
+  }
 }
